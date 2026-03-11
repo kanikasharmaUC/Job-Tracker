@@ -39,6 +39,7 @@ export async function registerRoutes(
     if (body.roleTitle !== undefined) updates.roleTitle = body.roleTitle;
     if (body.jobUrl !== undefined) updates.jobUrl = body.jobUrl;
     if (body.salary !== undefined) updates.salary = body.salary;
+    if (body.recruiterName !== undefined) updates.recruiterName = body.recruiterName;
     if (body.notes !== undefined) updates.notes = body.notes;
 
     if (body.status !== undefined) {

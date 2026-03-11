@@ -60,6 +60,7 @@ describe("salary field on Prospect type", () => {
       status: "Bookmarked",
       interestLevel: "Medium",
       salary: null,
+      recruiterName: null,
       notes: null,
       createdAt: new Date(),
       ...overrides,

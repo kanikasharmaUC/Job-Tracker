@@ -37,6 +37,7 @@ export function AddProspectForm({ onSuccess }: { onSuccess?: () => void }) {
       status: "Bookmarked",
       interestLevel: "Medium",
       salary: "",
+      recruiterName: "",
       notes: "",
     },
   });
@@ -118,6 +119,25 @@ export function AddProspectForm({ onSuccess }: { onSuccess?: () => void }) {
                   {...field}
                   value={field.value ?? ""}
                   data-testid="input-salary"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="recruiterName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Recruiter / HR Contact (optional)</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="e.g. Jane Smith"
+                  {...field}
+                  value={field.value ?? ""}
+                  data-testid="input-recruiter-name"
                 />
               </FormControl>
               <FormMessage />
