@@ -10,6 +10,7 @@ function makeProspect(overrides: Partial<Prospect> = {}): Prospect {
     status: "Bookmarked",
     interestLevel: "Medium",
     salary: null,
+    recruiterName: null,
     notes: null,
     createdAt: new Date(),
     ...overrides,
