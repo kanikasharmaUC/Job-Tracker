@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Prospect } from "@shared/schema";
-import { STATUSES } from "@shared/schema";
+import {
+  STATUSES,
+  INTEREST_LEVELS,
+  filterProspectsByInterest,
+} from "@shared/schema";
+import type { InterestFilter } from "@shared/schema";
 import { ProspectCard } from "@/components/prospect-card";
 import { AddProspectForm } from "@/components/add-prospect-form";
 import { Briefcase, Plus } from "lucide-react";
@@ -26,6 +31,8 @@ const columnColors: Record<string, string> = {
   Withdrawn: "bg-gray-500",
 };
 
+const FILTER_OPTIONS: InterestFilter[] = ["All", ...INTEREST_LEVELS];
+
 function KanbanColumn({
   status,
   prospects,
@@ -35,10 +42,15 @@ function KanbanColumn({
   prospects: Prospect[];
   isLoading: boolean;
 }) {
+  const [interestFilter, setInterestFilter] = useState<InterestFilter>("All");
+  const statusSlug = status.replace(/\s+/g, "-").toLowerCase();
+
+  const visibleProspects = filterProspectsByInterest(prospects, interestFilter);
+
   return (
     <div
       className="flex flex-col min-w-[260px] max-w-[320px] w-full bg-muted/40 rounded-md"
-      data-testid={`column-${status.replace(/\s+/g, "-").toLowerCase()}`}
+      data-testid={`column-${statusSlug}`}
     >
       <div className="flex items-center gap-2 px-3 py-2.5 border-b border-border/50">
         <div className={`w-2 h-2 rounded-full ${columnColors[status] || "bg-gray-400"}`} />
@@ -46,10 +58,25 @@ function KanbanColumn({
         <Badge
           variant="secondary"
           className="ml-auto text-[10px] px-1.5 py-0 h-5 min-w-[20px] flex items-center justify-center no-default-active-elevate"
-          data-testid={`badge-count-${status.replace(/\s+/g, "-").toLowerCase()}`}
+          data-testid={`badge-count-${statusSlug}`}
         >
-          {prospects.length}
+          {visibleProspects.length}
         </Badge>
+      </div>
+      <div className="px-2 pt-2">
+        <select
+          value={interestFilter}
+          onChange={(e) => setInterestFilter(e.target.value as InterestFilter)}
+          className="w-full text-xs rounded-md border border-border bg-background px-2 py-1 text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+          data-testid={`filter-interest-${statusSlug}`}
+          aria-label={`Filter ${status} by interest level`}
+        >
+          {FILTER_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt === "All" ? "All Interest Levels" : `${opt} Interest`}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="flex-1 overflow-y-auto px-2 py-2">
         <div className="space-y-2">
@@ -58,12 +85,16 @@ function KanbanColumn({
               <Skeleton className="h-28 rounded-md" />
               <Skeleton className="h-20 rounded-md" />
             </>
-          ) : prospects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center" data-testid={`empty-${status.replace(/\s+/g, "-").toLowerCase()}`}>
-              <p className="text-xs text-muted-foreground">No prospects</p>
+          ) : visibleProspects.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center" data-testid={`empty-${statusSlug}`}>
+              <p className="text-xs text-muted-foreground">
+                {interestFilter === "All"
+                  ? "No prospects"
+                  : `No ${interestFilter.toLowerCase()} interest prospects`}
+              </p>
             </div>
           ) : (
-            prospects.map((prospect) => (
+            visibleProspects.map((prospect) => (
               <ProspectCard key={prospect.id} prospect={prospect} />
             ))
           )}

@@ -34,6 +34,7 @@ Single `prospects` table: id, company_name, role_title, job_url, status, interes
 
 - **Statuses**: Bookmarked, Applied, Phone Screen, Interviewing, Offer, Rejected, Withdrawn
 - **Interest levels**: High, Medium, Low
+- **Per-column interest filter**: Each Kanban column has an independent dropdown to filter cards by interest level (All/High/Medium/Low). Filter logic lives in `shared/schema.ts` as `filterProspectsByInterest`.
 
 ## API
 
